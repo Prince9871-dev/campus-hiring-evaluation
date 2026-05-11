@@ -388,3 +388,19 @@ Benefits:
 - retries possible
 - faster execution
 - reduced failure chances
+
+
+# Stage 6
+
+In this stage, notifications are fetched using the provided API.
+
+Priority is calculated based on:
+- Placement notifications having highest priority
+- Result notifications having medium priority
+- Event notifications having lower priority
+
+Recent notifications are also given preference using timestamps.
+
+The notifications are sorted using both weight and timestamp and then top 10 notifications are displayed.
+
+For handling continuous incoming notifications efficiently, a priority queue or heap structure can be used so top notifications can be maintained without sorting the entire array repeatedly.
