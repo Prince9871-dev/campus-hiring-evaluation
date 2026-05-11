@@ -303,3 +303,40 @@ VALUES(
     'Microsoft hiring drive'
 );
 ```
+
+# Stage 3
+
+The query is correct because it fetches unread notifications of a particular student and shows latest notifications first.
+
+```sql
+SELECT * FROM notifications
+WHERE studentID = 1042
+AND isRead = false
+ORDER BY createdAt DESC;
+```
+
+As the number of notifications increases, this query can become slow because the database has to scan many rows. sorting also takes extra time when there are millions of records.
+
+to improve performance, indexing can be used.
+
+```sql
+CREATE INDEX idx_notification
+ON notifications(studentId, isRead, createdAt);
+```
+
+This will help in faster searching and sorting. Adding indexes on every column is not a good idea because it increases storage and slows down insert /update operations.
+indexes should only be added on columns which are searched frequently.
+Query for students who got placement notifications in last 7 days:
+
+```sql
+SELECT DISTINCT studentId
+FROM notifications
+WHERE type = 'Placement'
+AND createdAt >= NOW() - INTERVAL '7 days';
+```
+
+Some other improvements can be:
+- pagination
+- caching
+- archiving old notifications
+- table partitioning for huge data
