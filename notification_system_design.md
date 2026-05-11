@@ -354,3 +354,37 @@ Another improvement can be pagination so only limited notifications are fetched 
 - caching improves speed but increases memory usage
 - webSockets improve real time experience but are harder to manage at scale
 - pagination reduces load but users cannot see all notifications instantly
+
+# Stage 5
+
+The current implementation can be improved. If sending email fails in between, some students may receive notifications while others may not and can also be inconsistency where notification is saved in db but email is not sent.
+
+Doing everything sequentially for 50,000 students is also slow.
+
+A better approach is to use queues and background workers as Notifications can first be stored in database and then jobs can be added to a queue for email sending and push notifications, makes the system more reliable and scalable.
+
+Retry mechanism can also be added if email sending fails.
+
+pseudocode:
+
+```js
+function notifyAll(studentIds, message) {
+
+    for (const studentId of studentIds) {
+
+        saveToDB(studentId, message);
+
+        addEmailJob(studentId, message);
+
+        addPushNotificationJob(studentId, message);
+    }
+}
+```
+
+Workers will process queue jobs separately.
+
+Benefits:
+- better reliability
+- retries possible
+- faster execution
+- reduced failure chances
