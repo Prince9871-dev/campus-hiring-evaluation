@@ -340,3 +340,17 @@ Some other improvements can be:
 - caching
 - archiving old notifications
 - table partitioning for huge data
+
+# Stage 4
+
+Fetching notifications from database on every page load can increase load on the DB when thousands of students are active together.
+Can be solved using Caching.
+
+Frequently accessed notifications can be stored in Redis cache so the application does not query db every time improves response speed and reduces DB load.
+
+Another improvement can be pagination so only limited notifications are fetched instead of loading everything at once. webSockets can also help because notifications can be pushed in real-time instead of fetching repeatedly.
+
+
+- caching improves speed but increases memory usage
+- webSockets improve real time experience but are harder to manage at scale
+- pagination reduces load but users cannot see all notifications instantly
