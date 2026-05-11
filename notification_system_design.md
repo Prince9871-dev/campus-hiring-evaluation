@@ -187,3 +187,119 @@ ws://localhost:3000/notifications
 | 401 | Unauthorized |
 | 404 | Not Found |
 | 500 | Server Error |
+
+# Stage 2
+
+## Database Choice
+
+For storing notifications, I would prefer PostgreSQL because notifications contain structured data and relationships with students.
+IT also supports indexing, filtering, sorting, and scaling properly for large dataset. Another reason for choosing PostgreSQL is reliability and ACID properties which are useful for notification systems.
+
+---
+
+# Database Schema
+
+## notifications table
+
+| Column | Type |
+|---|---|
+| id | UUID |
+| studentId | VARCHAR |
+| type | VARCHAR |
+| message | TEXT |
+| isRead | BOOLEAN |
+| createdAt | TIMESTAMP |
+
+---
+
+# Sample SQL Schema
+
+```sql
+CREATE TABLE notifications (
+    id UUID PRIMARY KEY,
+    studentId VARCHAR(50),
+    type VARCHAR(20),
+    message TEXT,
+    isRead BOOLEAN DEFAULT FALSE,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+---
+
+# Possible Problems with Large Data
+
+As notification count increases, there are issues:
+
+- Slow queries
+- High DB load
+- Delay in fetching unread notifications
+- Increased storage usage
+
+---
+
+# Solutions
+
+Some optimizations that can be used:
+
+- Add indexes on studentId and isRead
+- Use pagination
+- Archive old notifications
+- Use caching for frequently accessed notifications
+
+---
+
+# Useful Queries
+
+## Fetch unread notifications
+
+```sql
+SELECT * 
+FROM notifications
+WHERE studentId = '1042'
+AND isRead = false
+ORDER BY createdAt DESC;
+```
+
+---
+
+## Mark notification as read
+
+```sql
+UPDATE notifications
+SET isRead = true
+WHERE id = 'n101';
+```
+
+---
+
+## Mark all notifications as read
+
+```sql
+UPDATE notifications
+SET isRead = true
+WHERE studentId = '1042';
+```
+
+---
+
+## Delete notification
+
+```sql
+DELETE FROM notifications
+WHERE id = 'n101';
+```
+
+---
+
+## Create notification
+
+```sql
+INSERT INTO notifications(id, studentId, type, message)
+VALUES(
+    'n201',
+    '1042',
+    'Placement',
+    'Microsoft hiring drive'
+);
+```
